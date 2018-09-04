@@ -1,16 +1,17 @@
 from collections import namedtuple
 import math
 
-HitInfo = namedtuple('HitInfo', ['t', 'p', 'normal'])
+HitInfo = namedtuple('HitInfo', ['t', 'p', 'normal', 'material'])
 
 class Hitable:
     def hit(self, ray, t_min, t_max, hit_info):
         raise NotImplementedError
 
 class Sphere(Hitable):
-    def __init__(self, center, radius):
+    def __init__(self, center, radius, material=None):
         self.center = center
         self.radius = radius
+        self.material = material
 
     def hit(self, ray, t_min, t_max):
         oc = ray.origin - self.center
@@ -26,7 +27,7 @@ class Sphere(Hitable):
                 p = ray(t)
                 normal = (p - self.center) / self.radius
 
-                return HitInfo(t, p, normal)
+                return HitInfo(t, p, normal, self.material)
 
             temp = (-b + math.sqrt(discriminant)) / (2*a)
             if t_min < temp < t_max:
@@ -34,7 +35,7 @@ class Sphere(Hitable):
                 p = ray(t)
                 normal = (p - self.center) / self.radius
 
-                return HitInfo(t, p, normal)
+                return HitInfo(t, p, normal, self.material)
 
         return None
 
